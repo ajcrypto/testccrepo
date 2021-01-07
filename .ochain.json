@@ -1,0 +1,9 @@
+{
+  "name": "fffffefe",
+  "description": "Chaincode package for fffffefe",
+  "chaincodeName": "fffffefe",
+  "chaincodeType":"golang",
+  "configFileLocation": "/Users/supplier.yml",
+  "goDomain": "example.com",
+  "appBuilderVersion": "1.4.0"
+}

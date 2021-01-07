@@ -1,0 +1,166 @@
+assets:
+    - name: supplier
+      properties:
+          - name: supplierId
+            type: string
+            mandatory: true
+            id: true
+            validate: /^[a-zA-Z]$/
+          - name: retailer
+            type: retailer
+          - name: rawMaterialAvailable
+            type: number
+            validate: positive()
+          - name: license
+            type: string
+            validate: min(2), max(4)
+          - name: expiryDate
+            type: date
+            validate: max('2020-06-26')
+          - name: active
+            type: boolean
+            default: true
+          - name: account
+            type: account
+      methods:
+          crud: [create, getById, update, delete]
+          others: [getHistoryById, getByRange]
+    - name: account
+      type: embedded
+      properties:
+            - name: rawMaterialAvailable
+              type: number
+              validate: positive()
+#            - name: supplier
+#              type: supplier
+            - name: license
+              type: string
+              validate: min(2), max(4)
+            - name: expiryDate
+              type: date
+              validate: max('2020-06-26')
+            - name: active
+              type: boolean
+              default: true
+      methods:
+          crud: [ create, getById, update, delete ]
+          others: [ getHistoryById, getByRange ]
+    - name: bank_details
+      type: embedded
+      properties:
+        - name: rawMaterialAvailable
+          type: number
+          validate: positive()
+        - name: license
+          type: string
+          validate: min(2), max(4)
+        - name: expiryDate
+          type: date
+          validate: max('2020-06-26')
+        - name: active
+          type: boolean
+          default: true
+      methods:
+        crud: [ create, getById, update, delete ]
+        others: [ getHistoryById, getByRange ]
+    - name: manufacturer
+      properties:
+          - name: manufacturerId
+            type: string
+            mandatory: true
+            id: true
+          - name: bank_details
+            type: bank_details
+          - name: rawMaterialAvailable
+            type: number
+            validate: max(8)
+          - name: productsAvailable
+            type: number
+          - name: completionDate
+            type: date
+            validate: min('2020-06-26T02:30:55Z'),max('2020-06-28T02:30:55Z')
+          - name: account
+            type: account
+      methods:
+          crud: [create, getById]
+          others: [getHistoryById]
+    - name: distributor
+      properties:
+        - name: distributorId
+          type: string
+          mandatory: true
+          id: true
+        - name: productsToBeShipped
+          type: number
+        - name: productsShipped
+          type: number
+          validate: min(3)
+        - name: productsReceived
+          type: number
+        - name: mailId
+          type: string
+          validate: email()
+        - name: distributionDate
+          type: date
+      methods:
+          crud: [create, getById]
+          others: []
+    - name: retailer
+      properties:
+        - name: retailerId
+          type: string
+          mandatory: true
+          id: true
+        - name: customer
+          type: customer
+        - name: productsOrdered
+          type: number
+          mandatory: true
+        - name: productsAvailable
+          type: number
+          default: 1
+        - name: productsSold
+          type: number
+        - name: remarks
+          type: string
+          default: "open for business"
+        - name: items
+          type: number[1:5]
+        - name: domain
+          type: string
+          validate: url(),min(30),max(50)
+      methods:
+          crud: [create, getById]
+          others: []      
+    - name: customer
+      properties:
+        - name: customerId
+          type: string
+          mandatory: true
+          id: true
+        - name: name
+          type: string
+          mandatory: true
+        - name: productsBought
+          type: number
+        - name: offerApplied
+          type: number
+          validate: negative()
+        - name: phoneNumber
+          type: string
+          validate: /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/
+        - name: received
+          type: boolean
+          default: false
+        - name: bank_details
+          type: bank_details
+      methods:
+          crud: [create, getById]
+          others: []
+addHistory: false
+customMethods:
+    - executeQuery
+    - "fetchRawMaterial(supplierId string, rawMaterialSupply int)"
+    - "getRawMaterialFromSupplier(manufacturerId string, supplierId string, rawMaterialSupply int)"
+    - "createProducts(manufacturerId string, rawMaterialConsumed int, productsCreated int)"
+    - "sendProductsToDistribution()"
